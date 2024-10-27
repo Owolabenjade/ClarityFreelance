@@ -258,10 +258,10 @@
                 (map-set jobs
                     { job-id: job-id }
                     (merge job
-                        (if is-rating-client
-                            { client-rating: (some rating) }
-                            { freelancer-rating: (some rating) }
-                        )
+                        {
+                            client-rating: (if is-rating-client (some rating) (get client-rating job)),
+                            freelancer-rating: (if is-rating-client (get freelancer-rating job) (some rating))
+                        }
                     )
                 )
                 (update-user-stats
