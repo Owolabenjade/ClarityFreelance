@@ -1,127 +1,121 @@
-# Freelance Escrow Smart Contract Documentation
+# FreelanceChain: Decentralized Freelance Marketplace
+FreelanceChain aims to create a decentralized, trustless environment where freelance transactions can be conducted without intermediaries. The platform enforces contract terms and handles payments, disputes, and reviews on-chain, allowing for efficient and secure freelance project management.
 
-## Overview
-This smart contract facilitates secure freelance work arrangements by implementing a milestone-based escrow system. It ensures fair transactions between clients and freelancers while maintaining payment security through smart contract automation.
+### Key Roles:
+- **Client**: The user who posts a job and manages the project's milestones.
+- **Freelancer**: The user who completes the job and submits deliverables for review.
+- **Arbitrator**: The individual or entity assigned to resolve disputes between clients and freelancers.
 
-## Key Features
-- Milestone-based payment release
-- Built-in platform fee mechanism (5%)
-- Secure fund holding
-- Automated payment distribution
-- Deadline tracking per milestone
+## Features
+- **Job and Milestone Management**: Allows the creation of jobs with multiple milestones, each associated with payment and deadlines.
+- **Escrow System**: Funds are securely held until milestone completion or job resolution.
+- **Dispute Resolution**: Includes functionality for dispute initiation, management, and arbitration.
+- **User Ratings**: Clients and freelancers can rate each other post-project to encourage quality service.
+- **Platform Fees**: Supports platform sustainability with configurable platform fees.
 
-## Use Case Scenario: Web Development Project
+## How It Works
+1. **Job Creation**: Clients initiate jobs with an assigned freelancer, specifying the total amount and milestones. An escrow system holds the funds until completion.
+2. **Milestone Submission**: Freelancers submit deliverables for each milestone, which clients review and approve or reject.
+3. **Dispute Resolution**: If disputes arise, clients or freelancers can initiate a dispute, which the arbitrator reviews.
+4. **Finalization**: Upon successful completion of all milestones, funds are released to the freelancer, and both parties can rate each other.
 
-### Initial Setup
-Alice (Client) wants to hire Bob (Freelancer) for a web development project with the following details:
-- Total Budget: 10,000 STX
-- Number of Milestones: 4
-- Platform Fee: 500 STX (5% of 10,000 STX)
+## Practical Use Case
+### Scenario
+*Alice is a startup founder* who needs a website designed. She decides to use FreelanceChain to hire a designer, *Bob*, through a decentralized platform.
 
-### Step-by-Step Workflow
+#### Step-by-Step Workflow
+1. **Alice Creates a Job**: Alice posts a job on FreelanceChain with an initial payment of 1,000 STX and sets three milestones for the project (e.g., wireframes, initial design, final delivery). Each milestone has a set deadline and amount.
+   
+2. **Funds Escrowed**: The total funds (including a 5% platform fee) are transferred to FreelanceChain’s escrow, where they’re held until the milestones are completed.
 
-1. **Project Creation**
-```clarity
-;; Alice creates the job
-(contract-call? .freelance-escrow create-job 
-    u1                  ;; job-id
-    'SP2J6ZY48GV1EZ5V2V5RB9MP66SW86PYKKNRV9EJ7  ;; Bob's address
-    u4                  ;; 4 milestones
-    u10000             ;; 10,000 STX total amount
-)
+3. **Bob Accepts the Job**: Bob reviews the job details and accepts the terms. He begins working on the first milestone, wireframes.
+
+4. **Milestone Submission and Review**:
+   - **Milestone 1**: Bob completes the wireframe and submits it through the contract. Alice reviews and approves it, releasing the first payment.
+   - **Milestone 2**: Bob works on the initial design and submits it. Alice requests a few revisions, which Bob provides before Alice approves it.
+   
+5. **Dispute (Optional)**: If a milestone was contested, Alice or Bob could initiate a dispute. For instance, if Alice was dissatisfied with the quality of work, she could open a dispute. The arbitrator then reviews both sides and decides on fund allocation.
+
+6. **Final Milestone and Rating**: Once Bob completes the final design and Alice approves it, the funds are released to Bob. Both Alice and Bob rate each other, contributing to their respective reputation scores on the platform.
+
+By using FreelanceChain, Alice and Bob benefit from a secure, trustless environment without relying on a centralized freelance platform.
+
+## Getting Started
+
+### Prerequisites
+- A Clarity development environment.
+- Familiarity with Clarity smart contract language.
+- STX tokens for testing and transactions.
+
+### Setup
+1. **Clone the repository**:
+    ```bash
+    git clone https://github.com/username/FreelanceChain
+    cd FreelanceChain
+    ```
+2. **Install dependencies** (if applicable):
+    ```bash
+    npm install
+    ```
+3. **Deploy the contract**:
+   Use Clarinet or any other Stacks development tool to deploy the contract.
+
+### Running Tests
+Run the test suite with Clarinet:
+```bash
+clarinet test
 ```
-- Alice deposits 10,500 STX (project amount + platform fee)
-- Contract creates job record with status "active"
-- Funds are securely held in the contract
+The tests cover various scenarios, including job creation, milestone management, dispute resolution, and rating.
 
-2. **Milestone Setup**
-```clarity
-;; Alice sets up milestones
-(contract-call? .freelance-escrow set-milestone
-    u1                  ;; job-id
-    u0                  ;; first milestone
-    u2500              ;; 2,500 STX for first milestone
-    u1682899200        ;; deadline timestamp
-)
+## Functions
+Below are some key functions within FreelanceChain.
+
+### Public Functions
+1. **create-job**:
+   - Description: Creates a job with specified milestones.
+   - Parameters: `job-id`, `freelancer`, `milestone-count`, `total-amount`.
+   
+2. **create-milestone**:
+   - Description: Creates a milestone within a job.
+   - Parameters: `job-id`, `milestone-id`, `amount`, `deadline`.
+   
+3. **submit-milestone**:
+   - Description: Submits deliverables for a milestone.
+   - Parameters: `job-id`, `milestone-id`, `deliverables`.
+
+4. **initiate-dispute**:
+   - Description: Starts a dispute if there is an issue with the job or milestone.
+   - Parameters: `job-id`, `reason`, `evidence`.
+   
+5. **resolve-dispute**:
+   - Description: Resolves an active dispute.
+   - Parameters: `job-id`, `resolution`, `refund-percentage`.
+
+6. **set-platform-fee**:
+   - Description: Sets the platform fee for job transactions.
+   - Parameters: `new-fee`.
+
+### Read-Only Functions
+1. **get-job-details**:
+   - Returns details of a specific job.
+
+2. **get-milestone-details**:
+   - Returns milestone-specific information within a job.
+
+3. **get-user-stats**:
+   - Provides statistics for a user, including total jobs and rating count.
+
+4. **get-dispute-details**:
+   - Returns details of a dispute for a specified job.
+
+## Testing
+This contract includes validation and tests to handle key workflows:
+- **Job and Milestone Creation**: Ensures jobs and milestones are accurately created.
+- **Dispute Management**: Tests dispute initiation, response, and resolution.
+- **Rating and Platform Fee Validation**: Validates user ratings and fee calculations.
+- **Edge Cases**: Covers cases like deadline expiry, insufficient funds, and invalid inputs.
+
+To run tests:
+```bash
+clarinet test
 ```
-Milestone breakdown:
-- Milestone 1 (2,500 STX): Initial design and wireframes
-- Milestone 2 (2,500 STX): Frontend development
-- Milestone 3 (2,500 STX): Backend integration
-- Milestone 4 (2,500 STX): Testing and deployment
-
-3. **Work Progress and Completion**
-- Bob works on each milestone
-- Upon milestone completion, Bob notifies Alice
-- Alice reviews the work and if satisfied:
-```clarity
-;; Alice approves milestone completion
-(contract-call? .freelance-escrow complete-milestone
-    u1                  ;; job-id
-    u0                  ;; milestone-id
-)
-```
-- Smart contract automatically transfers 2,500 STX to Bob
-- Milestone status updates to "completed"
-
-4. **Project Tracking**
-Participants can check status anytime:
-```clarity
-;; Check job details
-(contract-call? .freelance-escrow get-job-details u1)
-
-;; Check specific milestone
-(contract-call? .freelance-escrow get-milestone-details u1 u0)
-```
-
-## Security Features
-
-1. **Fund Security**
-- Client's funds are locked in the contract
-- Release only happens upon milestone approval
-- No direct withdrawal without completion
-
-2. **Authorization Checks**
-- Only the client can approve milestones
-- Only the client can set milestone details
-- System prevents unauthorized access
-
-3. **State Management**
-- Clear status tracking for jobs and milestones
-- Prevents double-payments
-- Maintains payment sequence integrity
-
-## Benefits
-
-1. **For Clients**
-- Protected funds through escrow
-- Milestone-based risk management
-- Clear progress tracking
-- No need for traditional escrow services
-
-2. **For Freelancers**
-- Guaranteed payment for completed work
-- Clear milestone definitions
-- Automated payments
-- Reduced payment disputes
-
-3. **For Platform**
-- Automated fee collection
-- Transparent transaction handling
-- Reduced administrative overhead
-- Scalable business model
-
-## Error Handling
-The contract handles common scenarios:
-- ERR-NOT-AUTHORIZED (u1): Unauthorized access attempt
-- ERR-INSUFFICIENT-FUNDS (u2): Insufficient balance for job creation
-- ERR-INVALID-STATE (u3): Invalid job or milestone state
-
-## Best Practices
-1. Set realistic milestone deadlines
-2. Keep milestone amounts proportional to work
-3. Clearly define deliverables for each milestone
-4. Regular progress checking using get-job-details
-5. Prompt milestone approval upon satisfactory completion
-
-This system provides a trustless, automated solution for freelance work management, ensuring fair and secure transactions for all parties involved.
